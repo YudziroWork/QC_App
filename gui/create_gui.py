@@ -85,7 +85,7 @@ class CreateWindow(ctk.CTkToplevel):
         ctk.CTkLabel(self.normal_path_frame, text="Куда сохранить отчёт").grid()
         self.report_entry = ctk.CTkEntry(self.normal_path_frame)
         self.report_entry.grid(row=5, column=0, padx=10, pady=10, ipadx=100)
-        ctk.CTkButton(self.normal_path_frame, text="Обзор", command=lambda: self.browse_file(self.report_entry)).grid(row=5, column=1)
+        ctk.CTkButton(self.normal_path_frame, text="Обзор", command=lambda: self.browse_file(self.report_entry, save=True)).grid(row=5, column=1)
 
         self.normal_setting_frame = ctk.CTkFrame(self)
 

@@ -5,21 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9029ebc2-e56a-461b-8151-526cb2c1e83b" name="Changes" comment="upg">
-      <change afterPath="$PROJECT_DIR$/create_report/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/create_report/config/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/create_report/config/settings.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/create_report/core/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/create_report/core/readers/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/create_report/core/report/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/create_report/core/report/base_report.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/create_report/core/report/regression_report.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/create_report/core/report/standart_report.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/create_report/core/stats/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gui/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/create_report/core/comparison/comparator.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/create_report/core/processor.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/create_report/core/readers/base_reader.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/create_report/core/readers/pdf_reader.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/create_report/core/readers/xlsx_reader.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/create_report/core/stats/stats.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/create_report/config/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/create_report/config/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/create_report/core/report/base_report.py" beforeDir="false" afterPath="$PROJECT_DIR$/create_report/core/report/base_report.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/create_report/core/report/standart_report.py" beforeDir="false" afterPath="$PROJECT_DIR$/create_report/core/report/standart_report.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gui/create_gui.py" beforeDir="false" afterPath="$PROJECT_DIR$/gui/create_gui.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gui/main_gui.py" beforeDir="false" afterPath="$PROJECT_DIR$/gui/main_gui.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,6 +82,7 @@
       <recent name="C:\Users\i-raikhin\PycharmProjects\QC_App" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\i-raikhin\PycharmProjects\QC_App\create_report\core\stats" />
       <recent name="C:\Users\i-raikhin\PycharmProjects\QC_App\create_report" />
     </key>
   </component>
@@ -146,7 +142,23 @@
       <option name="project" value="LOCAL" />
       <updated>1777902003748</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="upg">
+      <option name="closed" value="true" />
+      <created>1777906184457</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1777906184457</updated>
+    </task>
+    <task id="LOCAL-00004" summary="upg">
+      <option name="closed" value="true" />
+      <created>1777906222423</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1777906222423</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

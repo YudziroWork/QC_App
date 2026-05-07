@@ -5,14 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9029ebc2-e56a-461b-8151-526cb2c1e83b" name="Changes" comment="upg">
-      <change afterPath="$PROJECT_DIR$/create_report/core/comparison/comparator.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/create_report/core/processor.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/create_report/core/readers/base_reader.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/create_report/core/readers/pdf_reader.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/create_report/core/readers/xlsx_reader.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/create_report/core/stats/stats.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/create_report/config/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/create_report/config/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/create_report/core/report/base_report.py" beforeDir="false" afterPath="$PROJECT_DIR$/create_report/core/report/base_report.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/create_report/core/stats/adv_stats.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/create_report/core/comparison/comparator.py" beforeDir="false" afterPath="$PROJECT_DIR$/create_report/core/comparison/comparator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/create_report/core/processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/create_report/core/processor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/create_report/core/readers/pdf_reader.py" beforeDir="false" afterPath="$PROJECT_DIR$/create_report/core/readers/pdf_reader.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/create_report/core/report/standart_report.py" beforeDir="false" afterPath="$PROJECT_DIR$/create_report/core/report/standart_report.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gui/create_gui.py" beforeDir="false" afterPath="$PROJECT_DIR$/gui/create_gui.py" afterDir="false" />
     </list>
@@ -158,7 +154,15 @@
       <option name="project" value="LOCAL" />
       <updated>1777906222423</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="upg">
+      <option name="closed" value="true" />
+      <created>1778070026496</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1778070026496</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

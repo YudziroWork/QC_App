@@ -2,6 +2,7 @@ from create_report.core.readers.xlsx_reader import EtalonReader, ReportReader
 from create_report.core.comparison.comparator import compare
 from create_report.core.report.standart_report import StandardReport
 from create_report.core.stats.stats import calculate_statistics
+from create_report.core.readers.pdf_reader import PdfReportReader
 
 def run(etalon_path: str, report_path:str ,output_path:str, report_format: str = "xlsx"):
     try:
@@ -14,6 +15,8 @@ def run(etalon_path: str, report_path:str ,output_path:str, report_format: str =
     try:
         if report_format=="xlsx":
             report = ReportReader(report_path).read()
+        elif report_format=="pdf":
+            report = PdfReportReader(report_path,output_path).read()
         else:
             raise NotImplementedError()
     except FileNotFoundError:
@@ -28,7 +31,7 @@ def run(etalon_path: str, report_path:str ,output_path:str, report_format: str =
         raise RuntimeError(f"Ошибка при сравнении данных: {e}")
 
     try:
-        StandardReport().generate(results,stats, output_path)
+        StandardReport().generate(results,stats, output_path,report_format)
     except PermissionError:
         raise PermissionError(f"Файл отчёта открыт в другой программе: {output_path}")
     except Exception as e:

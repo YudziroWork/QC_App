@@ -41,10 +41,7 @@ def get_color(distance: int, record_length: int) -> str:
 
 
 def compare(etalon: list, report: list) -> tuple[list, dict]:
-    # etalon: ["А123ВС777", ...]
-    # report: [{"number": "А123ВС777", "time": "00:31:54"}, ...]
 
-    # счётчик баллов для каждой записи эталона
     etalon_scores = {normalize(e): 0 for e in etalon}
 
     results = []

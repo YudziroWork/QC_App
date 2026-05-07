@@ -2,6 +2,9 @@ from openpyxl import Workbook
 from openpyxl.styles import PatternFill, Font, Alignment, Border, Side
 from create_report.core.report.base_report import BaseReport
 from create_report.config.settings import COLORS
+from create_report.core.stats.adv_stats import calculate_advanced_statistics
+import os
+from openpyxl.drawing.image import Image
 
 class StandardReport(BaseReport):
 
@@ -14,7 +17,7 @@ class StandardReport(BaseReport):
                     max_length = max(max_length, len(str(cell.value)))
             ws.column_dimensions[col_letter].width = max_length + 4  # +4 для отступа
 
-    def generate(self,results: list, stats: dict, output_path:str):
+    def generate(self,results: list, stats: dict, output_path:str,report_format: str = "xlsx"):
         wb=Workbook()
         ws= wb.active
         ws.title="Отчёт"
@@ -24,7 +27,16 @@ class StandardReport(BaseReport):
         self._write_stats(ws, stats)
         self._auto_width(ws)
 
-        wb.save(output_path)
+        adv_stats=calculate_advanced_statistics(results)
+        ws2 = wb.create_sheet("Расширенная статистика")
+        self._write_advanced_sheet(ws2, adv_stats)
+
+
+        if report_format == "pdf":
+            ws3= wb.create_sheet("Фото проблемных")
+            self._write_problem_sheet(ws3,results,output_path)
+
+            wb.save(output_path)
 
     # ─────────────────────────────────────────
     # Таблица сравнения A:D
@@ -115,6 +127,110 @@ class StandardReport(BaseReport):
             if value is not None:
                 value_cell =ws.cell(row=row, column=col_value, value=value)
                 self._style_cell(value_cell)
+
+    def _write_advanced_sheet(self,ws,adv_stats: dict):
+        ws.cell(row=1, column=1, value="Эталон")
+        ws.cell(row=1, column=2, value="Повторы")
+        self._style_header(ws.cell(row=1,column=1))
+        self._style_header(ws.cell(row=1,column=2))
+        ws.cell(row=1, column=4, value="Ошибка")
+        ws.cell(row=1, column=5, value="Количество")
+        self._style_header(ws.cell(row=1, column=4))
+        self._style_header(ws.cell(row=1, column=5))
+
+        row =2
+        for etalon, count in sorted(adv_stats["etalon_usage"].items(),key=lambda x: x[1],reverse=True):
+            ws.cell(row=row, column=1,value=etalon)
+            ws.cell(row=row, column=2,value=count)
+            self._style_cell(ws.cell(row=row,column=2))
+            self._style_cell(ws.cell(row=row,column=2))
+            row+=1
+
+        row=2
+        for error, count in sorted(adv_stats["error_stats"].items(),key=lambda x: x[1],reverse=True):
+            ws.cell(row=row,column=4,value=error)
+            ws.cell(row=row, column=5,value=count)
+            self._style_cell(ws.cell(row=row, column=4))
+            self._style_cell(ws.cell(row=row, column=5))
+            row+=1
+
+        self._auto_width(ws)
+
+    # ─────────────────────────────────────────
+    # 3-й лист
+    # ─────────────────────────────────────────
+
+    def _write_problem_sheet(self, ws, results: list, output_path: str):
+        img_folder = os.path.join(os.path.dirname(output_path), "img")
+
+        # заголовки
+        ws.cell(row=1, column=1, value="Номер")
+        ws.cell(row=1, column=2, value="Изображение")
+        ws.cell(row=1, column=4, value="Нет номера")
+        ws.cell(row=1, column=5, value="Изображение")
+        for col in [1, 2, 4, 5]:
+            self._style_header(ws.cell(row=1, column=col))
+
+        if not os.path.exists(img_folder):
+            return
+
+        # список изображений "Нет номера"
+        no_number_images = sorted(
+            f for f in os.listdir(img_folder)
+            if f.startswith("Нет номера")
+        )
+        no_number_index = 0
+        problem_row = 2
+        no_number_row = 2
+
+        for item in results:
+            recognized = item["recognized"]
+            dist = item["distance"]
+
+            # пропускаем зелёные
+            if dist == 0:
+                continue
+
+            # блок "Нет номера"
+            if item.get("no_number", False):
+                ws.cell(row=no_number_row, column=4, value="Нет номера")
+
+                if no_number_index < len(no_number_images):
+                    img_path = os.path.join(img_folder, no_number_images[no_number_index])
+                    self._insert_image(ws, img_path, f"E{no_number_row}", no_number_row)
+                    no_number_index += 1
+
+                no_number_row += 1
+                continue
+
+            # жёлтые и красные
+            ws.cell(row=problem_row, column=1, value=recognized)
+            self._style_cell(ws.cell(row=problem_row, column=1))
+
+            images_found = sorted(
+                f for f in os.listdir(img_folder)
+                if f.startswith(recognized)
+            )
+
+            if images_found:
+                img_path = os.path.join(img_folder, images_found[0])
+                self._insert_image(ws, img_path, f"B{problem_row}", problem_row)
+
+            problem_row += 1
+
+    def _insert_image(self, ws, img_path: str, cell: str, row: int):
+        try:
+            img = Image(img_path)
+            max_height = 250
+            ratio = max_height / img.height
+            img.height = max_height
+            img.width = img.width * ratio
+            ws.add_image(img, cell)
+            ws.row_dimensions[row].height = max_height * 0.75
+        except Exception as e:
+            print(f"Ошибка вставки изображения {img_path}: {e}")
+
+
 
     # ─────────────────────────────────────────
     # Стили

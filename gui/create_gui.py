@@ -15,11 +15,14 @@ class CreateWindow(ctk.CTkToplevel):
             return
 
         try:
+
+            input_format = self.save_format_mode.get()
+
             processor.run(
                 etalon_path=etalon_path,
                 report_path=report_path,
                 output_path=output_path,
-                report_format="xlsx"
+                report_format=input_format
             )
             messagebox.showinfo("Готово", "Отчёт успешно сформирован!")
         except FileNotFoundError as e:
@@ -47,11 +50,19 @@ class CreateWindow(ctk.CTkToplevel):
 
         self.submit_button.grid(row=3, column=0, pady=10)
 
-    def browse_file(self, entry_widget, save=False):
+    def browse_file(self, entry_widget, save=False,file_type=None):
         if save:
             file_path = filedialog.asksaveasfilename(
                 defaultextension=".xlsx",
                 filetypes=[("Excel files", "*.xlsx")]
+            )
+        elif file_type == "pdf":
+            file_path = filedialog.askopenfilename(
+                filetypes=[("PDF files", "*.pdf")]
+            )
+        elif file_type == "xlsx":
+            file_path = filedialog.askopenfilename(
+                filetypes=[("Excel files", "*.xlsx *.xls")]
             )
         else:
             file_path = filedialog.askopenfilename(
@@ -67,7 +78,7 @@ class CreateWindow(ctk.CTkToplevel):
         self.title("Создание отчёта")
         self.geometry("600x600")
 
-        # исправлено: начальное значение совпадает со значением радиокнопки
+
         self.report_mode = ctk.StringVar(value="normal")
 
         self.mod_frame = ctk.CTkFrame(self)
@@ -107,10 +118,13 @@ class CreateWindow(ctk.CTkToplevel):
         self.recognized_entry.grid(row=3, column=0, padx=10, pady=10, ipadx=100)
         ctk.CTkButton(
             self.normal_path_frame, text="Обзор",
-            command=lambda: self.browse_file(self.recognized_entry)
+            command=lambda: self.browse_file(
+                self.recognized_entry,
+                file_type=self.save_format_mode.get()
+            )
         ).grid(row=3, column=1)
 
-        # исправлено: добавлен row=4
+
         ctk.CTkLabel(self.normal_path_frame, text="Куда сохранить отчёт").grid(row=4, column=0)
         self.report_entry = ctk.CTkEntry(self.normal_path_frame)
         self.report_entry.grid(row=5, column=0, padx=10, pady=10, ipadx=100)
@@ -129,11 +143,23 @@ class CreateWindow(ctk.CTkToplevel):
         self.show_red = ctk.CTkCheckBox(self.normal_setting_frame, text="Показывать не распознанные совпадения")
         self.show_red.grid(row=1, column=0, sticky="w", padx=5)
 
-        self.show_stat_1 = ctk.CTkCheckBox(self.normal_setting_frame, text="Показывать статистику №1")
-        self.show_stat_1.grid(row=2, column=0, sticky="w", padx=5, pady=5)
+        ctk.CTkLabel(self.normal_setting_frame, text="Формат файла отчёта SecurOS").grid(row=2, column=0, columnspan=2, pady=(10, 0))
 
-        self.show_stat_2 = ctk.CTkCheckBox(self.normal_setting_frame, text="Показывать статистику №2")
-        self.show_stat_2.grid(row=3, column=0, sticky="w", padx=5)
+        self.save_format_mode = ctk.StringVar(value="xlsx")
+
+        self.radio_button_xlsx = ctk.CTkRadioButton(
+            self.normal_setting_frame, text="XLSX",
+            variable=self.save_format_mode, value="xlsx",
+
+        )
+        self.radio_button_xlsx.grid(row=3, column=0, padx=20, pady=10)
+
+        self.radio_button_pdf = ctk.CTkRadioButton(
+            self.normal_setting_frame, text="PDF",
+            variable=self.save_format_mode, value="pdf",
+
+        )
+        self.radio_button_pdf.grid(row=3, column=1)
 
         self.normal_setting_frame.grid(row=2, column=0, padx=0, pady=10, ipady=2.5)
 

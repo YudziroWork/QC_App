@@ -14,7 +14,7 @@ def calculate_advanced_statistics(results: list) -> dict:
             continue
 
         recognized = item["recognized"]
-        threshold = THRESHOLD * len(best)
+        threshold = THRESHOLD * len(recognized)
 
         if dist == 0:
             etalon_usage[best] += 1

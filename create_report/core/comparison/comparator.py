@@ -75,6 +75,9 @@ def compare(etalon: list, report: list) -> tuple[list, dict]:
 
         color = get_color(min_distance, len(number))
 
+        if color == "red":
+            best_match = None
+
         # начисляем балл эталону если совпадение не красное
         if color != "red" and best_match in etalon_scores:
             etalon_scores[best_match] += 1

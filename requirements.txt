@@ -4,3 +4,4 @@ PyMuPDF
 xlwings
 Pillow
 customtkinter
+python-calamine

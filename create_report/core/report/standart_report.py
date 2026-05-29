@@ -5,6 +5,7 @@ from create_report.config.settings import COLORS
 from create_report.core.stats.adv_stats import calculate_advanced_statistics
 import os
 from openpyxl.drawing.image import Image
+from create_report.core.settings_reader import get_settings
 
 class StandardReport(BaseReport):
 
@@ -13,11 +14,14 @@ class StandardReport(BaseReport):
             max_length = 0
             col_letter = col[0].column_letter  # буква столбца (A, B, C...)
             for cell in col:
-                if cell.value:
-                    max_length = max(max_length, len(str(cell.value)))
+                try:
+                    if cell.value:
+                        max_length = max(max_length, len(str(cell.value)))
+                except AttributeError:
+                    continue
             ws.column_dimensions[col_letter].width = max_length + 4  # +4 для отступа
 
-    def generate(self,results: list, stats: dict, output_path:str,report_format: str = "xlsx"):
+    def generate(self,results: list, stats: dict, output_path:str,report_format: str = "xlsx", keywords=None, show_settings=False):
         wb=Workbook()
         ws= wb.active
         ws.title="Отчёт"
@@ -36,7 +40,11 @@ class StandardReport(BaseReport):
             ws3= wb.create_sheet("Фото проблемных")
             self._write_problem_sheet(ws3,results,output_path)
 
-            wb.save(output_path)
+        if show_settings and keywords:
+            ws4 = wb.create_sheet("Настройки")
+            self._write_settings_sheet(ws4, keywords)
+
+        wb.save(output_path)
 
     # ─────────────────────────────────────────
     # Таблица сравнения A:D
@@ -230,6 +238,67 @@ class StandardReport(BaseReport):
         except Exception as e:
             print(f"Ошибка вставки изображения {img_path}: {e}")
 
+    # ─────────────────────────────────────────
+    # Настройки
+    # ─────────────────────────────────────────
+    def _write_settings_sheet(self, ws, keywords: list):
+
+
+        column = 1
+
+        for keyword in keywords:
+            settings = get_settings([keyword])
+
+            ws.merge_cells(start_row=1, start_column=column, end_row=1, end_column=column + 1)
+            ws.cell(row=1, column=column, value=keyword)
+            self._style_header(ws.cell(row=1, column=column))
+
+            ws.cell(row=2, column=column, value="Настройка")
+            ws.cell(row=2, column=column + 1, value="Значение")
+            self._style_header(ws.cell(row=2, column=column))
+            self._style_header(ws.cell(row=2, column=column + 1))
+
+            ws.cell(row=3, column=column, value="Символ короче")
+            ws.cell(row=4, column=column, value="Символ длиннее")
+            ws.cell(row=5, column=column, value="Номер уже был распознан")
+            ws.cell(row=6, column=column, value="Качество распознавания")
+            ws.cell(row=7, column=column, value="Тип распознавателя")
+            ws.cell(row=8, column=column, value="Режим работы распознавателя")
+
+            if settings:
+                s = settings[0]["params"]
+
+                ws.cell(row=3, column=column + 1, value=s.get("min_height_symbol"))
+                ws.cell(row=4, column=column + 1, value=s.get("max_height_symbol"))
+                ws.cell(row=5, column=column + 1, value=s.get("same_number_time"))
+                ws.cell(row=6, column=column + 1, value=s.get("quality"))
+
+                mode = s.get("mode")
+                if mode == "0":
+                    ws.cell(row=7, column=column + 1, value="Высокая скорость")
+                elif mode == "2":
+                    ws.cell(row=7, column=column + 1, value="Низкая скорость")
+                elif mode == "3":
+                    ws.cell(row=7, column=column + 1, value="Stop & Go")
+
+                tracking = s.get("tracking_mode")
+                if tracking == "0":
+                    ws.cell(row=8, column=column + 1, value="Дорога/шоссе")
+                elif tracking == "1":
+                    ws.cell(row=8, column=column + 1, value="Парковка")
+                elif tracking == "2":
+                    ws.cell(row=8, column=column + 1, value="Мобильный")
+            else:
+                ws.cell(row=3, column=column + 1, value="Не найдено")
+
+            for row_idx in range(2, 9):
+                self._style_cell(ws.cell(row=row_idx, column=column))
+                self._style_cell(ws.cell(row=row_idx, column=column + 1))
+
+            column += 3
+
+        self._auto_width(ws)
+
 
 
     # ─────────────────────────────────────────
@@ -249,10 +318,10 @@ class StandardReport(BaseReport):
         cell.border=Border(left=thin, right=thin, top=thin, bottom=thin)
 
     def _get_fill(self,color: str)->PatternFill:
-        hex_color=COLORS.get(color, "FFFFFF")
+        hex_color="FF"+COLORS.get(color, "FFFFFF")
         return PatternFill(start_color=hex_color, end_color=hex_color, fill_type='solid')
 
-    def _pct(selfself, value: int,total: int)->float:
+    def _pct(self, value: int,total: int)->float:
         if total == 0:
             return 0.0
         return round(value / total * 100, 2)

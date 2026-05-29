@@ -10,6 +10,8 @@ def calculate_statistics(results: list, etalon_list: list, threshold_ratio: floa
     best_matches_for_duplicates = []
     missed = []
 
+
+
     for item in results:
         # проверка на "нет номера"
         if item.get("no_number", False):
@@ -44,6 +46,12 @@ def calculate_statistics(results: list, etalon_list: list, threshold_ratio: floa
     # список пропущенных номеров эталона
     used_etalon = set(best_matches_for_duplicates)
     missed = [e for e in etalon_list if e not in used_etalon]
+    not_used_count = len(missed)
+
+    counter = Counter(best_matches_for_duplicates)
+    print("COUNTER:", sorted(counter.items(), key=lambda x: -x[1])[:15])
+    duplicates_count = sum(count - 1 for count in counter.values() if count > 1)
+    print("DUPLICATES:", duplicates_count)
 
     # precision/recall/F1
     # защита от деления на ноль
@@ -80,3 +88,8 @@ def calculate_statistics(results: list, etalon_list: list, threshold_ratio: floa
         "recall_soft":      round(recall_soft * 100, 2),
         "f1_soft":          round(f1_soft * 100, 2),
     }
+
+    counter = Counter(best_matches_for_duplicates)
+    print("COUNTER:", sorted(counter.items(), key=lambda x: -x[1])[:15])
+    duplicates_count = sum(count - 1 for count in counter.values() if count > 1)
+    print("DUPLICATES:", duplicates_count)

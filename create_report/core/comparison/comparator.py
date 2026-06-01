@@ -58,7 +58,8 @@ def compare(etalon: list, report: list) -> tuple[list, dict]:
                 "best_match": None,
                 "distance": None,
                 "color": "red",
-                "no_number": True
+                "no_number": True,
+                "images": record.get("images", [])  # и здесь
             })
             continue
 
@@ -88,7 +89,8 @@ def compare(etalon: list, report: list) -> tuple[list, dict]:
             "best_match": best_match,
             "distance": min_distance,
             "color": color,
-            "no_number": False
+            "no_number": False,
+            "images": record.get("images", [])  # нужно добавить эту строку
         })
 
     # сортировка по времени

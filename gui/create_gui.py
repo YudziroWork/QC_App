@@ -76,7 +76,7 @@ class CreateWindow(ctk.CTkToplevel):
                     etalon_path=etalon_path,
                     report_path=report_path,
                     output_path=output_path,
-                    report_format=input_format,
+                    report_format=self.save_format_mode.get(),
                     show_settings=bool(self.setting_check.get())
                 )
                 messagebox.showinfo("Готово", "Отчёт успешно сформирован!")
@@ -154,8 +154,8 @@ class CreateWindow(ctk.CTkToplevel):
     def browse_file(self, entry_widget, save=False,file_type=None):
         if save:
             file_path = filedialog.asksaveasfilename(
-                defaultextension=".xlsx",
-                filetypes=[("Excel files", "*.xlsx")]
+                defaultextension=".html",
+                filetypes=[("HTML files", "*.html")]
             )
         elif file_type == "pdf":
             file_path = filedialog.askopenfilename(

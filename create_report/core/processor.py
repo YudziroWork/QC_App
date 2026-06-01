@@ -1,9 +1,9 @@
-from create_report.core.readers.xlsx_reader import EtalonReader, ReportReader
-from create_report.core.comparison.comparator import compare
-from create_report.core.report.standart_report import StandardReport
-from create_report.core.stats.stats import calculate_statistics
-from create_report.core.readers.pdf_reader import PdfReportReader
 from create_report.core.report.regression_report import RegressionReport
+from create_report.core.readers.xlsx_reader import EtalonReader, ReportReader
+from create_report.core.readers.pdf_reader import PdfReportReader
+from create_report.core.comparison.comparator import compare
+from create_report.core.stats.stats import calculate_statistics
+from create_report.core.report.html_report import HtmlReport
 
 
 def run(etalon_path: str, report_path: str, output_path: str, report_format: str = "xlsx", show_settings: bool = False):
@@ -14,18 +14,19 @@ def run(etalon_path: str, report_path: str, output_path: str, report_format: str
     except Exception as e:
         raise RuntimeError(f"Ошибка при чтении файла эталона: {e}")
 
-    keywords = []
-    if show_settings:
-        try:
+    try:
+        if report_format == "xlsx":
             keywords = ReportReader(report_path).read_keywords()
-        except Exception as e:
-            raise RuntimeError(f"Ошибка при чтении ключевых слов эталона: {e}")
+        else:
+            keywords = []
+    except Exception as e:
+        raise RuntimeError(f"Ошибка при чтении ключевых слов отчёта: {e}")
 
     try:
         if report_format == "xlsx":
             report = ReportReader(report_path).read()
         elif report_format == "pdf":
-            report = PdfReportReader(report_path, output_path).read()
+            report = PdfReportReader(report_path).read()
         else:
             raise NotImplementedError()
     except FileNotFoundError:
@@ -40,11 +41,19 @@ def run(etalon_path: str, report_path: str, output_path: str, report_format: str
         raise RuntimeError(f"Ошибка при сравнении данных: {e}")
 
     try:
-        StandardReport().generate(results, stats, output_path, report_format, keywords=keywords, show_settings=show_settings)
+        HtmlReport().generate(
+            results=results,
+            stats=stats,
+            output_path=output_path,
+            keywords=keywords,
+            etalon_path=etalon_path,
+            report_path=report_path,
+        )
     except PermissionError:
         raise PermissionError(f"Файл отчёта открыт в другой программе: {output_path}")
     except Exception as e:
         raise RuntimeError(f"Ошибка при формировании отчёта: {e}")
+
 
 def run_regression(groups: list, output_path: str, country: str, version: str):
     datasets = []

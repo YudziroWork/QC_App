@@ -10,9 +10,8 @@ class PdfReportReader(BaseReader):
     KEYWORD_DATE = ("дата фиксации:", "recognition date:")
     KEYWORD_PERIOD = ("период:", "report period:")
 
-    def __init__(self, file_path: str, output_path: str):
+    def __init__(self, file_path: str):
         super().__init__(file_path)
-        self.output_path = output_path
 
     def read(self) -> list:
         records = []
@@ -60,13 +59,13 @@ class PdfReportReader(BaseReader):
 
                 if number:
                     adjusted_time = self._adjust_time(date_str, start_time)
-                    #print(f"DEBUG number='{number}' date_str='{date_str}' time='{adjusted_time}'")
                     numbers.append({
                         "number": number,
-                        "time": adjusted_time
+                        "time": adjusted_time,
+                        "images": self._extract_images(page, number)
                     })
 
-            self._save_images(pdf, [r["number"] for r in numbers])
+
             pdf.close()
 
             records = numbers
@@ -90,10 +89,17 @@ class PdfReportReader(BaseReader):
                     # русский формат: от 21.04.2026 13:04:00 до ...
                     if len(tokens) >= 3 and tokens[0].lower() in ("от",):
                         start_str = tokens[1] + " " + tokens[2]
-                        try:
-                            return datetime.strptime(start_str, "%d.%m.%Y %H:%M:%S")
-                        except ValueError:
-                            pass
+                        formats = [
+                            "%d.%m.%Y %H:%M:%S",
+                            "%d.%m.%Y %H:%M:%S.%f",
+                            "%m/%d/%Y %I:%M:%S %p",
+                            "%m/%d/%Y %I:%M:%S.%f %p",
+                        ]
+                        for fmt in formats:
+                            try:
+                                return datetime.strptime(start_str, fmt)
+                            except ValueError:
+                                continue
 
                 # английский формат: from 5/25/2026 2:00:00 PM to ...
                 full_line = line + (" " + lines[i + 1] if i + 1 < len(lines) else "")
@@ -111,7 +117,12 @@ class PdfReportReader(BaseReader):
         if not time_str:
             return "00:00:00"
         try:
-            formats = ["%d.%m.%Y %H:%M:%S", "%m/%d/%Y %I:%M:%S %p"]
+            formats = [
+                "%d.%m.%Y %H:%M:%S",
+                "%d.%m.%Y %H:%M:%S.%f",
+                "%m/%d/%Y %I:%M:%S %p",
+                "%m/%d/%Y %I:%M:%S.%f %p",
+            ]
             record_time = None
             for fmt in formats:
                 try:
@@ -132,37 +143,21 @@ class PdfReportReader(BaseReader):
         except Exception:
             return "00:00:00"
 
-    def _save_images(self, pdf, numbers: list):
-        img_folder = self._get_img_folder()
-        os.makedirs(img_folder, exist_ok=True)
+    def _extract_images(self, page, number: str) -> list:
+        import base64
+        images = []
+        text = page.get_text()
+        print(f"DEBUG extract_images: number='{number}' in page text: {number in text}")
+        print(f"DEBUG page images count: {len(page.get_images(full=True))}")
+        if number not in text:
+            return images
+        for img_info in page.get_images(full=True):
+            xref = img_info[0]
+            base_image = page.parent.extract_image(xref)
+            image_bytes = base_image["image"]
+            ext = base_image["ext"]
+            b64 = base64.b64encode(image_bytes).decode("utf-8")
+            images.append(f"data:image/{ext};base64,{b64}")
+        print(f"DEBUG extracted {len(images)} images")
+        return images
 
-        for number in numbers:
-            counter = 1
-            safe_name = self._safe_filename(number)
-
-            for page in pdf:
-                if number not in page.get_text():
-                    continue
-
-                for img_info in page.get_images(full=True):
-                    xref = img_info[0]
-                    base_image = pdf.extract_image(xref)
-                    image_bytes = base_image["image"]
-                    ext = base_image["ext"]
-
-                    filename = f"{safe_name}.{ext}"
-                    if os.path.exists(os.path.join(img_folder, filename)):
-                        filename = f"{safe_name}_{counter}.{ext}"
-                        counter += 1
-
-                    filepath = os.path.join(img_folder, filename)
-                    with open(filepath, "wb") as f:
-                        f.write(image_bytes)
-
-    def _get_img_folder(self) -> str:
-        return os.path.join(os.path.dirname(self.output_path), "img")
-
-    def _safe_filename(self, number: str) -> str:
-        if number.strip().lower() == "нет номера":
-            return "Нет номера"
-        return re.sub(r'[<>:"/\\|?*]', "", number)

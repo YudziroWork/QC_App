@@ -175,7 +175,7 @@ class CreateWindow(ctk.CTkToplevel):
 
     def _load_countries(self)->list:
         try:
-            path=os.path.join(os.path.dirname(os.path.abspath(__file__)),"...","countries.txt")
+            path=os.path.join(os.path.dirname(os.path.abspath(__file__)),"..","countries.txt")
             with open(path, encoding="utf-8") as f:
                 countries = [line.strip()for line in f if line.strip()]
             return countries if countries else["-"]

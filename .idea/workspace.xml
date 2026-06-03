@@ -5,13 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9029ebc2-e56a-461b-8151-526cb2c1e83b" name="Changes" comment="upg">
-      <change afterPath="$PROJECT_DIR$/create_report/core/report/html_report.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/create_report/core/report/html_sections.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/create_report/core/report/html_templates.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/create_report/core/comparison/comparator.py" beforeDir="false" afterPath="$PROJECT_DIR$/create_report/core/comparison/comparator.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/countries.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/create_report/core/report/regression_html_report.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/create_report/core/report/regression_html_sections.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/create_report/core/report/regression_html_templates.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/create_report/core/processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/create_report/core/processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/create_report/core/readers/pdf_reader.py" beforeDir="false" afterPath="$PROJECT_DIR$/create_report/core/readers/pdf_reader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/create_report/core/readers/xlsx_reader.py" beforeDir="false" afterPath="$PROJECT_DIR$/create_report/core/readers/xlsx_reader.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/create_report/core/report/html_sections.py" beforeDir="false" afterPath="$PROJECT_DIR$/create_report/core/report/html_sections.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gui/create_gui.py" beforeDir="false" afterPath="$PROJECT_DIR$/gui/create_gui.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -64,6 +63,7 @@
     "Python.main.executor": "Run",
     "Python.main_gui.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master",
     "last_opened_file_path": "C:/Users/i-raikhin/PycharmProjects/QC_App",
@@ -180,7 +180,15 @@
       <option name="project" value="LOCAL" />
       <updated>1780035864984</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="upg">
+      <option name="closed" value="true" />
+      <created>1780309116651</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1780309116651</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

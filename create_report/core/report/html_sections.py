@@ -224,13 +224,52 @@ def _build_error_list(recognized: str, best: str, dist: int, color: str) -> str:
     if color == "gray" or not best or best == "—":
         return ""
 
+    # LCS — находим наибольшую общую подпоследовательность
+    m, n = len(recognized), len(best)
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if recognized[i-1] == best[j-1]:
+                dp[i][j] = dp[i-1][j-1] + 1
+            else:
+                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+
+    # Восстанавливаем операции
+    extra = []    # лишние в recognized
+    missing = []  # отсутствующие (есть в best, нет в recognized)
+    substitutions = []
+
+    i, j = m, n
+    while i > 0 and j > 0:
+        if recognized[i-1] == best[j-1]:
+            i -= 1
+            j -= 1
+        elif dp[i-1][j] >= dp[i][j-1]:
+            extra.append(recognized[i-1])
+            i -= 1
+        else:
+            missing.append(best[j-1])
+            j -= 1
+
+    while i > 0:
+        extra.append(recognized[i-1])
+        i -= 1
+    while j > 0:
+        missing.append(best[j-1])
+        j -= 1
+
+
+    while extra and missing:
+        substitutions.append(f"{missing.pop()} → {extra.pop()}")
+
     errors = []
-    min_len = min(len(recognized), len(best))
-
-    for i in range(min_len):
-        if recognized[i] != best[i]:
-            errors.append(f"{recognized[i]} → {best[i]}")
-
+    if substitutions:
+        for s in substitutions:
+            errors.append(f"Ошибки: {s}")
+    if extra:
+        errors.append(f"Лишние символы: {', '.join(extra)}")
+    if missing:
+        errors.append(f"Отсутствующие символы: {', '.join(missing)}")
     if len(recognized) != len(best):
         errors.append(f"Длина отличается ({len(recognized)} → {len(best)})")
 

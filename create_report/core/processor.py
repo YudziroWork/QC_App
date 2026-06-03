@@ -4,6 +4,7 @@ from create_report.core.readers.pdf_reader import PdfReportReader
 from create_report.core.comparison.comparator import compare
 from create_report.core.stats.stats import calculate_statistics
 from create_report.core.report.html_report import HtmlReport
+from create_report.core.report.regression_html_report import RegressionHtmlReport
 
 
 def run(etalon_path: str, report_path: str, output_path: str, report_format: str = "xlsx", show_settings: bool = False):
@@ -95,7 +96,13 @@ def run_regression(groups: list, output_path: str, country: str, version: str):
         })
 
     try:
-        RegressionReport().generate(datasets, output_path, country, version)
+        RegressionHtmlReport().generate(
+            datasets=datasets,
+            output_path=output_path,
+            country=country,
+            version=version,
+            groups=groups,
+        )
     except PermissionError:
         raise PermissionError(f"Файл отчёта открыт в другой программе: {output_path}")
     except Exception as e:
